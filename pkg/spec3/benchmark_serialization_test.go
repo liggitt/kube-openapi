@@ -9,10 +9,10 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"k8s.io/kube-openapi/pkg/internal"
+	"sigs.k8s.io/randfill"
+
 	jsontesting "k8s.io/kube-openapi/pkg/util/jsontesting"
 	"k8s.io/kube-openapi/pkg/validation/spec"
-	"sigs.k8s.io/randfill"
 )
 
 // cmp.Diff panics when reflecting unexported fields under jsonreference.Ref
@@ -54,21 +54,9 @@ func TestOpenAPIV3Deserialize(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	internal.UseOptimizedJSONUnmarshalingV3 = false
-
-	var result1 *OpenAPI
-
-	if err := json.Unmarshal(originalJSON, &result1); err != nil {
-		t.Fatal(err)
-	}
-	internal.UseOptimizedJSONUnmarshalingV3 = true
 	var result2 *OpenAPI
 	if err := json.Unmarshal(originalJSON, &result2); err != nil {
 		t.Fatal(err)
-	}
-
-	if !reflect.DeepEqual(result1, result2) {
-		t.Fatal(cmp.Diff(result1, result2, swaggerDiffOptions...))
 	}
 }
 
@@ -87,18 +75,9 @@ func TestOpenAPIV3Serialize(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	internal.UseOptimizedJSONUnmarshalingV3 = false
-	want, err := json.Marshal(openapi)
+	_, err = openapi.MarshalJSON()
 	if err != nil {
 		t.Fatal(err)
-	}
-	internal.UseOptimizedJSONUnmarshalingV3 = true
-	got, err := openapi.MarshalJSON()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if err := jsontesting.JsonCompare(want, got); err != nil {
-		t.Errorf("marshal doesn't match: %v", err)
 	}
 }
 
@@ -112,18 +91,9 @@ func TestOpenAPIV3SerializeFuzzed(t *testing.T) {
 		openapi := &OpenAPI{}
 		fuzzer.Fill(openapi)
 
-		internal.UseOptimizedJSONUnmarshalingV3 = false
-		want, err := json.Marshal(openapi)
+		_, err := openapi.MarshalJSON()
 		if err != nil {
 			t.Fatal(err)
-		}
-		internal.UseOptimizedJSONUnmarshalingV3 = true
-		got, err := openapi.MarshalJSON()
-		if err != nil {
-			t.Fatal(err)
-		}
-		if err := jsontesting.JsonCompare(want, got); err != nil {
-			t.Errorf("fuzzed marshal doesn't match: %v", err)
 		}
 	}
 }
@@ -143,7 +113,6 @@ func TestOpenAPIV3SerializeStable(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	internal.UseOptimizedJSONUnmarshalingV3 = true
 	for i := 0; i < 5; i++ {
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
 			want, err := openapi.MarshalJSON()
@@ -183,34 +152,9 @@ func BenchmarkOpenAPIV3Deserialize(b *testing.B) {
 			b.Fatal(err)
 		}
 		b.ResetTimer()
-		b.Run(fmt.Sprintf("%s jsonv1", bc.file), func(b2 *testing.B) {
-			b2.ReportAllocs()
-			internal.UseOptimizedJSONUnmarshaling = false
-			internal.UseOptimizedJSONUnmarshalingV3 = false
-			for i := 0; i < b2.N; i++ {
-				var result *OpenAPI
-				if err := json.Unmarshal(originalJSON, &result); err != nil {
-					b2.Fatal(err)
-				}
-			}
-		})
-
-		b.Run(fmt.Sprintf("%s jsonv2 via jsonv1 schema only", bc.file), func(b2 *testing.B) {
-			b2.ReportAllocs()
-			internal.UseOptimizedJSONUnmarshaling = true
-			internal.UseOptimizedJSONUnmarshalingV3 = false
-			for i := 0; i < b2.N; i++ {
-				var result *OpenAPI
-				if err := json.Unmarshal(originalJSON, &result); err != nil {
-					b2.Fatal(err)
-				}
-			}
-		})
 
 		b.Run(fmt.Sprintf("%s jsonv2 via jsonv1 full spec", bc.file), func(b2 *testing.B) {
 			b2.ReportAllocs()
-			internal.UseOptimizedJSONUnmarshaling = true
-			internal.UseOptimizedJSONUnmarshalingV3 = true
 			for i := 0; i < b2.N; i++ {
 				var result *OpenAPI
 				if err := json.Unmarshal(originalJSON, &result); err != nil {
@@ -221,8 +165,6 @@ func BenchmarkOpenAPIV3Deserialize(b *testing.B) {
 
 		b.Run("jsonv2", func(b2 *testing.B) {
 			b2.ReportAllocs()
-			internal.UseOptimizedJSONUnmarshaling = true
-			internal.UseOptimizedJSONUnmarshalingV3 = true
 			for i := 0; i < b2.N; i++ {
 				var result *OpenAPI
 				if err := result.UnmarshalJSON(originalJSON); err != nil {
@@ -259,19 +201,9 @@ func BenchmarkOpenAPIV3Serialize(b *testing.B) {
 			b.Fatal(err)
 		}
 		b.ResetTimer()
-		b.Run(fmt.Sprintf("%s jsonv1", bc.file), func(b2 *testing.B) {
-			b2.ReportAllocs()
-			internal.UseOptimizedJSONMarshalingV3 = false
-			for i := 0; i < b2.N; i++ {
-				if _, err := json.Marshal(openapi); err != nil {
-					b2.Fatal(err)
-				}
-			}
-		})
 
 		b.Run(fmt.Sprintf("%s jsonv2 via jsonv1 full spec", bc.file), func(b2 *testing.B) {
 			b2.ReportAllocs()
-			internal.UseOptimizedJSONMarshalingV3 = true
 			for i := 0; i < b2.N; i++ {
 				if _, err := json.Marshal(openapi); err != nil {
 					b2.Fatal(err)
@@ -281,7 +213,6 @@ func BenchmarkOpenAPIV3Serialize(b *testing.B) {
 
 		b.Run("jsonv2", func(b2 *testing.B) {
 			b2.ReportAllocs()
-			internal.UseOptimizedJSONMarshalingV3 = true
 			for i := 0; i < b2.N; i++ {
 				if _, err := openapi.MarshalJSON(); err != nil {
 					b2.Fatal(err)

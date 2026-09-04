@@ -17,11 +17,8 @@ limitations under the License.
 package spec3
 
 import (
-	"encoding/json"
 	"encoding/json/jsontext"
 	jsonv2 "encoding/json/v2"
-
-	"github.com/go-openapi/swag"
 
 	"k8s.io/kube-openapi/pkg/internal"
 	"k8s.io/kube-openapi/pkg/validation/spec"
@@ -38,22 +35,7 @@ type Header struct {
 
 // MarshalJSON is a custom marshal function that knows how to encode Header as JSON
 func (h *Header) MarshalJSON() ([]byte, error) {
-	if internal.UseOptimizedJSONMarshalingV3 {
-		return internal.DeterministicMarshal(h)
-	}
-	b1, err := json.Marshal(h.Refable)
-	if err != nil {
-		return nil, err
-	}
-	b2, err := json.Marshal(h.HeaderProps)
-	if err != nil {
-		return nil, err
-	}
-	b3, err := json.Marshal(h.VendorExtensible)
-	if err != nil {
-		return nil, err
-	}
-	return swag.ConcatJSON(b1, b2, b3), nil
+	return internal.DeterministicMarshal(h)
 }
 
 func (h *Header) MarshalJSONTo(enc *jsontext.Encoder) error {
@@ -69,20 +51,7 @@ func (h *Header) MarshalJSONTo(enc *jsontext.Encoder) error {
 }
 
 func (h *Header) UnmarshalJSON(data []byte) error {
-	if internal.UseOptimizedJSONUnmarshalingV3 {
-		return jsonv2.Unmarshal(data, h)
-	}
-	if err := json.Unmarshal(data, &h.Refable); err != nil {
-		return err
-	}
-	if err := json.Unmarshal(data, &h.HeaderProps); err != nil {
-		return err
-	}
-	if err := json.Unmarshal(data, &h.VendorExtensible); err != nil {
-		return err
-	}
-
-	return nil
+	return jsonv2.Unmarshal(data, h)
 }
 
 func (h *Header) UnmarshalJSONFrom(dec *jsontext.Decoder) error {

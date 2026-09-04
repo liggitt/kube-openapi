@@ -17,11 +17,8 @@ limitations under the License.
 package spec3
 
 import (
-	"encoding/json"
 	"encoding/json/jsontext"
 	jsonv2 "encoding/json/v2"
-
-	"github.com/go-openapi/swag"
 
 	"k8s.io/kube-openapi/pkg/internal"
 	"k8s.io/kube-openapi/pkg/validation/spec"
@@ -37,18 +34,7 @@ type Operation struct {
 
 // MarshalJSON is a custom marshal function that knows how to encode Operation as JSON
 func (o *Operation) MarshalJSON() ([]byte, error) {
-	if internal.UseOptimizedJSONMarshalingV3 {
-		return internal.DeterministicMarshal(o)
-	}
-	b1, err := json.Marshal(o.OperationProps)
-	if err != nil {
-		return nil, err
-	}
-	b2, err := json.Marshal(o.VendorExtensible)
-	if err != nil {
-		return nil, err
-	}
-	return swag.ConcatJSON(b1, b2), nil
+	return internal.DeterministicMarshal(o)
 }
 
 func (o *Operation) MarshalJSONTo(enc *jsontext.Encoder) error {
@@ -63,13 +49,7 @@ func (o *Operation) MarshalJSONTo(enc *jsontext.Encoder) error {
 
 // UnmarshalJSON hydrates this items instance with the data from JSON
 func (o *Operation) UnmarshalJSON(data []byte) error {
-	if internal.UseOptimizedJSONUnmarshalingV3 {
-		return jsonv2.Unmarshal(data, o)
-	}
-	if err := json.Unmarshal(data, &o.OperationProps); err != nil {
-		return err
-	}
-	return json.Unmarshal(data, &o.VendorExtensible)
+	return jsonv2.Unmarshal(data, o)
 }
 
 func (o *Operation) UnmarshalJSONFrom(dec *jsontext.Decoder) error {

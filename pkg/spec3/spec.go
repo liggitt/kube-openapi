@@ -17,7 +17,6 @@ limitations under the License.
 package spec3
 
 import (
-	"encoding/json"
 	"encoding/json/jsontext"
 	jsonv2 "encoding/json/v2"
 
@@ -46,19 +45,11 @@ type OpenAPI struct {
 func (o *OpenAPI) UnmarshalJSON(data []byte) error {
 	type OpenAPIWithNoFunctions OpenAPI
 	p := (*OpenAPIWithNoFunctions)(o)
-	if internal.UseOptimizedJSONUnmarshalingV3 {
-		return jsonv2.Unmarshal(data, &p)
-	}
-	return json.Unmarshal(data, &p)
+	return jsonv2.Unmarshal(data, &p)
 }
 
 func (o *OpenAPI) MarshalJSON() ([]byte, error) {
-	if internal.UseOptimizedJSONMarshalingV3 {
-		return internal.DeterministicMarshal(o)
-	}
-	type OpenAPIWithNoFunctions OpenAPI
-	p := (*OpenAPIWithNoFunctions)(o)
-	return json.Marshal(&p)
+	return internal.DeterministicMarshal(o)
 }
 
 func (o *OpenAPI) MarshalJSONTo(enc *jsontext.Encoder) error {
