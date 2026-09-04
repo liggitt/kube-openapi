@@ -17,11 +17,8 @@ limitations under the License.
 package spec3
 
 import (
-	"encoding/json"
 	"encoding/json/jsontext"
 	jsonv2 "encoding/json/v2"
-
-	"github.com/go-openapi/swag"
 
 	"k8s.io/kube-openapi/pkg/internal"
 	"k8s.io/kube-openapi/pkg/validation/spec"
@@ -43,18 +40,7 @@ type ServerProps struct {
 
 // MarshalJSON is a custom marshal function that knows how to encode Responses as JSON
 func (s *Server) MarshalJSON() ([]byte, error) {
-	if internal.UseOptimizedJSONMarshalingV3 {
-		return internal.DeterministicMarshal(s)
-	}
-	b1, err := json.Marshal(s.ServerProps)
-	if err != nil {
-		return nil, err
-	}
-	b2, err := json.Marshal(s.VendorExtensible)
-	if err != nil {
-		return nil, err
-	}
-	return swag.ConcatJSON(b1, b2), nil
+	return internal.DeterministicMarshal(s)
 }
 
 func (s *Server) MarshalJSONTo(enc *jsontext.Encoder) error {
@@ -68,17 +54,7 @@ func (s *Server) MarshalJSONTo(enc *jsontext.Encoder) error {
 }
 
 func (s *Server) UnmarshalJSON(data []byte) error {
-	if internal.UseOptimizedJSONUnmarshalingV3 {
-		return jsonv2.Unmarshal(data, s)
-	}
-
-	if err := json.Unmarshal(data, &s.ServerProps); err != nil {
-		return err
-	}
-	if err := json.Unmarshal(data, &s.VendorExtensible); err != nil {
-		return err
-	}
-	return nil
+	return jsonv2.Unmarshal(data, s)
 }
 
 func (s *Server) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
@@ -111,18 +87,7 @@ type ServerVariableProps struct {
 
 // MarshalJSON is a custom marshal function that knows how to encode Responses as JSON
 func (s *ServerVariable) MarshalJSON() ([]byte, error) {
-	if internal.UseOptimizedJSONMarshalingV3 {
-		return internal.DeterministicMarshal(s)
-	}
-	b1, err := json.Marshal(s.ServerVariableProps)
-	if err != nil {
-		return nil, err
-	}
-	b2, err := json.Marshal(s.VendorExtensible)
-	if err != nil {
-		return nil, err
-	}
-	return swag.ConcatJSON(b1, b2), nil
+	return internal.DeterministicMarshal(s)
 }
 
 func (s *ServerVariable) MarshalJSONTo(enc *jsontext.Encoder) error {
@@ -136,16 +101,7 @@ func (s *ServerVariable) MarshalJSONTo(enc *jsontext.Encoder) error {
 }
 
 func (s *ServerVariable) UnmarshalJSON(data []byte) error {
-	if internal.UseOptimizedJSONUnmarshalingV3 {
-		return jsonv2.Unmarshal(data, s)
-	}
-	if err := json.Unmarshal(data, &s.ServerVariableProps); err != nil {
-		return err
-	}
-	if err := json.Unmarshal(data, &s.VendorExtensible); err != nil {
-		return err
-	}
-	return nil
+	return jsonv2.Unmarshal(data, s)
 }
 
 func (s *ServerVariable) UnmarshalJSONFrom(dec *jsontext.Decoder) error {

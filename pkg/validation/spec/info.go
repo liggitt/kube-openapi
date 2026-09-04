@@ -20,8 +20,6 @@ import (
 	jsonv2 "encoding/json/v2"
 	"strings"
 
-	"github.com/go-openapi/swag"
-
 	"k8s.io/kube-openapi/pkg/internal"
 )
 
@@ -171,18 +169,7 @@ type Info struct {
 
 // MarshalJSON marshal this to JSON
 func (i Info) MarshalJSON() ([]byte, error) {
-	if internal.UseOptimizedJSONMarshaling {
-		return internal.DeterministicMarshal(i)
-	}
-	b1, err := json.Marshal(i.InfoProps)
-	if err != nil {
-		return nil, err
-	}
-	b2, err := json.Marshal(i.VendorExtensible)
-	if err != nil {
-		return nil, err
-	}
-	return swag.ConcatJSON(b1, b2), nil
+	return internal.DeterministicMarshal(i)
 }
 
 func (i Info) MarshalJSONTo(enc *jsontext.Encoder) error {
@@ -197,14 +184,7 @@ func (i Info) MarshalJSONTo(enc *jsontext.Encoder) error {
 
 // UnmarshalJSON marshal this from JSON
 func (i *Info) UnmarshalJSON(data []byte) error {
-	if internal.UseOptimizedJSONUnmarshaling {
-		return jsonv2.Unmarshal(data, i)
-	}
-
-	if err := json.Unmarshal(data, &i.InfoProps); err != nil {
-		return err
-	}
-	return json.Unmarshal(data, &i.VendorExtensible)
+	return jsonv2.Unmarshal(data, i)
 }
 
 func (i *Info) UnmarshalJSONFrom(dec *jsontext.Decoder) error {

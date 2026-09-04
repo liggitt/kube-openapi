@@ -23,8 +23,6 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/go-openapi/swag"
-
 	"k8s.io/kube-openapi/pkg/internal"
 	"k8s.io/kube-openapi/pkg/validation/spec"
 )
@@ -39,18 +37,7 @@ type Responses struct {
 
 // MarshalJSON is a custom marshal function that knows how to encode Responses as JSON
 func (r *Responses) MarshalJSON() ([]byte, error) {
-	if internal.UseOptimizedJSONMarshalingV3 {
-		return internal.DeterministicMarshal(r)
-	}
-	b1, err := json.Marshal(r.ResponsesProps)
-	if err != nil {
-		return nil, err
-	}
-	b2, err := json.Marshal(r.VendorExtensible)
-	if err != nil {
-		return nil, err
-	}
-	return swag.ConcatJSON(b1, b2), nil
+	return internal.DeterministicMarshal(r)
 }
 
 func (r Responses) MarshalJSONTo(enc *jsontext.Encoder) error {
@@ -73,16 +60,7 @@ func (r Responses) MarshalJSONTo(enc *jsontext.Encoder) error {
 }
 
 func (r *Responses) UnmarshalJSON(data []byte) error {
-	if internal.UseOptimizedJSONUnmarshalingV3 {
-		return jsonv2.Unmarshal(data, r)
-	}
-	if err := json.Unmarshal(data, &r.ResponsesProps); err != nil {
-		return err
-	}
-	if err := json.Unmarshal(data, &r.VendorExtensible); err != nil {
-		return err
-	}
-	return nil
+	return jsonv2.Unmarshal(data, r)
 }
 
 // ResponsesProps holds the list of possible responses as they are returned from executing this operation
@@ -107,35 +85,7 @@ func (r ResponsesProps) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON unmarshals responses from JSON
 func (r *ResponsesProps) UnmarshalJSON(data []byte) error {
-	if internal.UseOptimizedJSONUnmarshalingV3 {
-		return jsonv2.Unmarshal(data, r)
-	}
-	var res map[string]json.RawMessage
-	if err := json.Unmarshal(data, &res); err != nil {
-		return err
-	}
-	if v, ok := res["default"]; ok {
-		value := Response{}
-		if err := json.Unmarshal(v, &value); err != nil {
-			return err
-		}
-		r.Default = &value
-		delete(res, "default")
-	}
-	for k, v := range res {
-		// Take all integral keys
-		if nk, err := strconv.Atoi(k); err == nil {
-			if r.StatusCodeResponses == nil {
-				r.StatusCodeResponses = map[int]*Response{}
-			}
-			value := Response{}
-			if err := json.Unmarshal(v, &value); err != nil {
-				return err
-			}
-			r.StatusCodeResponses[nk] = &value
-		}
-	}
-	return nil
+	return jsonv2.Unmarshal(data, r)
 }
 
 func (r *Responses) UnmarshalJSONFrom(dec *jsontext.Decoder) (err error) {
@@ -203,22 +153,7 @@ type Response struct {
 
 // MarshalJSON is a custom marshal function that knows how to encode Response as JSON
 func (r *Response) MarshalJSON() ([]byte, error) {
-	if internal.UseOptimizedJSONMarshalingV3 {
-		return internal.DeterministicMarshal(r)
-	}
-	b1, err := json.Marshal(r.Refable)
-	if err != nil {
-		return nil, err
-	}
-	b2, err := json.Marshal(r.ResponseProps)
-	if err != nil {
-		return nil, err
-	}
-	b3, err := json.Marshal(r.VendorExtensible)
-	if err != nil {
-		return nil, err
-	}
-	return swag.ConcatJSON(b1, b2, b3), nil
+	return internal.DeterministicMarshal(r)
 }
 
 func (r Response) MarshalJSONTo(enc *jsontext.Encoder) error {
@@ -234,19 +169,7 @@ func (r Response) MarshalJSONTo(enc *jsontext.Encoder) error {
 }
 
 func (r *Response) UnmarshalJSON(data []byte) error {
-	if internal.UseOptimizedJSONUnmarshalingV3 {
-		return jsonv2.Unmarshal(data, r)
-	}
-	if err := json.Unmarshal(data, &r.Refable); err != nil {
-		return err
-	}
-	if err := json.Unmarshal(data, &r.ResponseProps); err != nil {
-		return err
-	}
-	if err := json.Unmarshal(data, &r.VendorExtensible); err != nil {
-		return err
-	}
-	return nil
+	return jsonv2.Unmarshal(data, r)
 }
 
 func (r *Response) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
@@ -286,22 +209,7 @@ type Link struct {
 
 // MarshalJSON is a custom marshal function that knows how to encode Link as JSON
 func (r *Link) MarshalJSON() ([]byte, error) {
-	if internal.UseOptimizedJSONMarshalingV3 {
-		return internal.DeterministicMarshal(r)
-	}
-	b1, err := json.Marshal(r.Refable)
-	if err != nil {
-		return nil, err
-	}
-	b2, err := json.Marshal(r.LinkProps)
-	if err != nil {
-		return nil, err
-	}
-	b3, err := json.Marshal(r.VendorExtensible)
-	if err != nil {
-		return nil, err
-	}
-	return swag.ConcatJSON(b1, b2, b3), nil
+	return internal.DeterministicMarshal(r)
 }
 
 func (r *Link) MarshalJSONTo(enc *jsontext.Encoder) error {
@@ -317,20 +225,7 @@ func (r *Link) MarshalJSONTo(enc *jsontext.Encoder) error {
 }
 
 func (r *Link) UnmarshalJSON(data []byte) error {
-	if internal.UseOptimizedJSONUnmarshalingV3 {
-		return jsonv2.Unmarshal(data, r)
-	}
-	if err := json.Unmarshal(data, &r.Refable); err != nil {
-		return err
-	}
-	if err := json.Unmarshal(data, &r.LinkProps); err != nil {
-		return err
-	}
-	if err := json.Unmarshal(data, &r.VendorExtensible); err != nil {
-		return err
-	}
-
-	return nil
+	return jsonv2.Unmarshal(data, r)
 }
 
 func (l *Link) UnmarshalJSONFrom(dec *jsontext.Decoder) error {

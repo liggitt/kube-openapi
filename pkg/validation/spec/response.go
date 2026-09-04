@@ -15,11 +15,8 @@
 package spec
 
 import (
-	"encoding/json"
 	"encoding/json/jsontext"
 	jsonv2 "encoding/json/v2"
-
-	"github.com/go-openapi/swag"
 
 	"k8s.io/kube-openapi/pkg/internal"
 )
@@ -52,21 +49,7 @@ type Response struct {
 
 // UnmarshalJSON hydrates this items instance with the data from JSON
 func (r *Response) UnmarshalJSON(data []byte) error {
-	if internal.UseOptimizedJSONUnmarshaling {
-		return jsonv2.Unmarshal(data, r)
-	}
-
-	if err := json.Unmarshal(data, &r.ResponseProps); err != nil {
-		return err
-	}
-	if err := json.Unmarshal(data, &r.Refable); err != nil {
-		return err
-	}
-	if err := json.Unmarshal(data, &r.VendorExtensible); err != nil {
-		return err
-	}
-
-	return nil
+	return jsonv2.Unmarshal(data, r)
 }
 
 func (r *Response) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
@@ -90,22 +73,7 @@ func (r *Response) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
 
 // MarshalJSON converts this items object to JSON
 func (r Response) MarshalJSON() ([]byte, error) {
-	if internal.UseOptimizedJSONMarshaling {
-		return internal.DeterministicMarshal(r)
-	}
-	b1, err := json.Marshal(r.ResponseProps)
-	if err != nil {
-		return nil, err
-	}
-	b2, err := json.Marshal(r.Refable)
-	if err != nil {
-		return nil, err
-	}
-	b3, err := json.Marshal(r.VendorExtensible)
-	if err != nil {
-		return nil, err
-	}
-	return swag.ConcatJSON(b1, b2, b3), nil
+	return internal.DeterministicMarshal(r)
 }
 
 func (r Response) MarshalJSONTo(enc *jsontext.Encoder) error {
