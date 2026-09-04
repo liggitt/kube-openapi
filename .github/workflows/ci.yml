@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        go-version: ['1.25', '1.26']
+        go-version: ['1.27']
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6.0.0
@@ -38,7 +38,7 @@ jobs:
     # release branches in k/k.
     - name: Run verify scripts
       run: |
-        ./hack/verify-go-directive.sh 1.25.0
+        ./hack/verify-go-directive.sh 1.27.0
   ci-go-tip:
     # Informational lane that exercises the vendored encoding/json/v2 shim
     # against Go tip so upstream changes (e.g. graduating JSONv2 to baseline)
