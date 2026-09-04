@@ -72,7 +72,7 @@ func (r *Response) UnmarshalJSON(data []byte) error {
 func (r *Response) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
 	var x struct {
 		ResponseProps
-		Extensions Extensions `json:",inline"`
+		Extensions Extensions `json:",embed"`
 	}
 
 	if err := jsonv2.UnmarshalDecode(dec, &x); err != nil {
@@ -111,8 +111,8 @@ func (r Response) MarshalJSON() ([]byte, error) {
 func (r Response) MarshalJSONTo(enc *jsontext.Encoder) error {
 	var x struct {
 		Ref           string                `json:"$ref,omitempty"`
-		Extensions    Extensions            `json:",inline"`
-		ResponseProps responsePropsOmitZero `json:",inline"`
+		Extensions    Extensions            `json:",embed"`
+		ResponseProps responsePropsOmitZero `json:",embed"`
 	}
 	x.Ref = r.Refable.Ref.String()
 	x.Extensions = internal.SanitizeExtensions(r.Extensions)

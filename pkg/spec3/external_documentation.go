@@ -57,8 +57,8 @@ func (e *ExternalDocumentation) MarshalJSON() ([]byte, error) {
 
 func (e *ExternalDocumentation) MarshalJSONTo(enc *jsontext.Encoder) error {
 	var x struct {
-		ExternalDocumentationProps `json:",inline"`
-		Extensions                 spec.Extensions `json:",inline"`
+		ExternalDocumentationProps `json:",embed"`
+		Extensions                 spec.Extensions `json:",embed"`
 	}
 	x.Extensions = internal.SanitizeExtensions(e.Extensions)
 	x.ExternalDocumentationProps = e.ExternalDocumentationProps
@@ -80,7 +80,7 @@ func (e *ExternalDocumentation) UnmarshalJSON(data []byte) error {
 
 func (e *ExternalDocumentation) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
 	var x struct {
-		Extensions spec.Extensions `json:",inline"`
+		Extensions spec.Extensions `json:",embed"`
 		ExternalDocumentationProps
 	}
 	if err := jsonv2.UnmarshalDecode(dec, &x); err != nil {

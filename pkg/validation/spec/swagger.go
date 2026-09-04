@@ -54,7 +54,7 @@ func (s Swagger) MarshalJSON() ([]byte, error) {
 // MarshalJSON marshals this swagger structure to json
 func (s Swagger) MarshalJSONTo(enc *jsontext.Encoder) error {
 	var x struct {
-		Extensions Extensions `json:",inline"`
+		Extensions Extensions `json:",embed"`
 		SwaggerProps
 	}
 	x.Extensions = internal.SanitizeExtensions(s.Extensions)
@@ -83,7 +83,7 @@ func (s *Swagger) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
 	// optimize this and other usages of this pattern:
 	// https://github.com/kubernetes/kube-openapi/pull/319#discussion_r983165948
 	var x struct {
-		Extensions Extensions `json:",inline"`
+		Extensions Extensions `json:",embed"`
 		SwaggerProps
 	}
 

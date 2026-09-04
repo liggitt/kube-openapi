@@ -56,7 +56,7 @@ func (r *Responses) MarshalJSON() ([]byte, error) {
 func (r Responses) MarshalJSONTo(enc *jsontext.Encoder) error {
 	type ArbitraryKeys map[string]interface{}
 	var x struct {
-		ArbitraryKeys ArbitraryKeys `json:",inline"`
+		ArbitraryKeys ArbitraryKeys `json:",embed"`
 		Default       *Response     `json:"default,omitzero"`
 	}
 	x.ArbitraryKeys = make(map[string]any, len(r.Extensions)+len(r.StatusCodeResponses))
@@ -224,8 +224,8 @@ func (r *Response) MarshalJSON() ([]byte, error) {
 func (r Response) MarshalJSONTo(enc *jsontext.Encoder) error {
 	var x struct {
 		Ref           string          `json:"$ref,omitempty"`
-		Extensions    spec.Extensions `json:",inline"`
-		ResponseProps `json:",inline"`
+		Extensions    spec.Extensions `json:",embed"`
+		ResponseProps `json:",embed"`
 	}
 	x.Ref = r.Refable.Ref.String()
 	x.Extensions = internal.SanitizeExtensions(r.Extensions)
@@ -251,7 +251,7 @@ func (r *Response) UnmarshalJSON(data []byte) error {
 
 func (r *Response) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
 	var x struct {
-		Extensions spec.Extensions `json:",inline"`
+		Extensions spec.Extensions `json:",embed"`
 		ResponseProps
 	}
 	if err := jsonv2.UnmarshalDecode(dec, &x); err != nil {
@@ -307,8 +307,8 @@ func (r *Link) MarshalJSON() ([]byte, error) {
 func (r *Link) MarshalJSONTo(enc *jsontext.Encoder) error {
 	var x struct {
 		Ref        string          `json:"$ref,omitempty"`
-		Extensions spec.Extensions `json:",inline"`
-		LinkProps  `json:",inline"`
+		Extensions spec.Extensions `json:",embed"`
+		LinkProps  `json:",embed"`
 	}
 	x.Ref = r.Refable.Ref.String()
 	x.Extensions = internal.SanitizeExtensions(r.Extensions)
@@ -335,7 +335,7 @@ func (r *Link) UnmarshalJSON(data []byte) error {
 
 func (l *Link) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
 	var x struct {
-		Extensions spec.Extensions `json:",inline"`
+		Extensions spec.Extensions `json:",embed"`
 		LinkProps
 	}
 	if err := jsonv2.UnmarshalDecode(dec, &x); err != nil {

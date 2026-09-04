@@ -69,9 +69,9 @@ func (h Header) MarshalJSON() ([]byte, error) {
 
 func (h Header) MarshalJSONTo(enc *jsontext.Encoder) error {
 	var x struct {
-		CommonValidations commonValidationsOmitZero `json:",inline"`
-		SimpleSchema      simpleSchemaOmitZero      `json:",inline"`
-		Extensions        Extensions                `json:",inline"`
+		CommonValidations commonValidationsOmitZero `json:",embed"`
+		SimpleSchema      simpleSchemaOmitZero      `json:",embed"`
+		Extensions        Extensions                `json:",embed"`
 		HeaderProps
 	}
 	x.CommonValidations = commonValidationsOmitZero(h.CommonValidations)
@@ -103,7 +103,7 @@ func (h *Header) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
 	var x struct {
 		CommonValidations
 		SimpleSchema
-		Extensions Extensions `json:",inline"`
+		Extensions Extensions `json:",embed"`
 		HeaderProps
 	}
 

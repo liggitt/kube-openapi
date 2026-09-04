@@ -59,7 +59,7 @@ func (t Tag) MarshalJSON() ([]byte, error) {
 
 func (t Tag) MarshalJSONTo(enc *jsontext.Encoder) error {
 	var x struct {
-		Extensions Extensions `json:",inline"`
+		Extensions Extensions `json:",embed"`
 		TagProps
 	}
 	x.Extensions = internal.SanitizeExtensions(t.Extensions)
@@ -81,7 +81,7 @@ func (t *Tag) UnmarshalJSON(data []byte) error {
 
 func (t *Tag) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
 	var x struct {
-		Extensions Extensions `json:",inline"`
+		Extensions Extensions `json:",embed"`
 		TagProps
 	}
 	if err := jsonv2.UnmarshalDecode(dec, &x); err != nil {

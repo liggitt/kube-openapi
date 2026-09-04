@@ -64,7 +64,7 @@ func (s SecurityScheme) MarshalJSON() ([]byte, error) {
 
 func (s SecurityScheme) MarshalJSONTo(enc *jsontext.Encoder) error {
 	var x struct {
-		Extensions Extensions `json:",inline"`
+		Extensions Extensions `json:",embed"`
 		SecuritySchemeProps
 	}
 	x.Extensions = internal.SanitizeExtensions(s.Extensions)
@@ -82,7 +82,7 @@ func (s *SecurityScheme) UnmarshalJSON(data []byte) error {
 
 func (s *SecurityScheme) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
 	var x struct {
-		Extensions Extensions `json:",inline"`
+		Extensions Extensions `json:",embed"`
 		SecuritySchemeProps
 	}
 	if err := jsonv2.UnmarshalDecode(dec, &x); err != nil {

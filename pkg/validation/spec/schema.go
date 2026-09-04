@@ -522,9 +522,9 @@ func (s Schema) MarshalJSON() ([]byte, error) {
 func (s Schema) MarshalJSONTo(enc *jsontext.Encoder) error {
 	type ArbitraryKeys map[string]interface{}
 	var x struct {
-		ArbitraryKeys      ArbitraryKeys              `json:",inline"`
-		SchemaProps        schemaPropsOmitZero        `json:",inline"`
-		SwaggerSchemaProps swaggerSchemaPropsOmitZero `json:",inline"`
+		ArbitraryKeys      ArbitraryKeys              `json:",embed"`
+		SchemaProps        schemaPropsOmitZero        `json:",embed"`
+		SwaggerSchemaProps swaggerSchemaPropsOmitZero `json:",embed"`
 		Schema             string                     `json:"$schema,omitempty"`
 		Ref                string                     `json:"$ref,omitempty"`
 	}
@@ -599,7 +599,7 @@ func (s *Schema) UnmarshalJSON(data []byte) error {
 
 func (s *Schema) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
 	var x struct {
-		Extensions Extensions `json:",inline"`
+		Extensions Extensions `json:",embed"`
 		SchemaProps
 		SwaggerSchemaProps
 	}

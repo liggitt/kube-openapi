@@ -128,7 +128,7 @@ func (i *Items) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
 	var x struct {
 		CommonValidations
 		SimpleSchema
-		Extensions Extensions `json:",inline"`
+		Extensions Extensions `json:",embed"`
 	}
 	if err := jsonv2.UnmarshalDecode(dec, &x); err != nil {
 		return err
@@ -169,10 +169,10 @@ func (i Items) MarshalJSON() ([]byte, error) {
 
 func (i Items) MarshalJSONTo(enc *jsontext.Encoder) error {
 	var x struct {
-		CommonValidations commonValidationsOmitZero `json:",inline"`
-		SimpleSchema      simpleSchemaOmitZero      `json:",inline"`
+		CommonValidations commonValidationsOmitZero `json:",embed"`
+		SimpleSchema      simpleSchemaOmitZero      `json:",embed"`
 		Ref               string                    `json:"$ref,omitempty"`
-		Extensions        Extensions                `json:",inline"`
+		Extensions        Extensions                `json:",embed"`
 	}
 	x.CommonValidations = commonValidationsOmitZero(i.CommonValidations)
 	x.SimpleSchema = simpleSchemaOmitZero(i.SimpleSchema)

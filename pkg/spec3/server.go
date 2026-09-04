@@ -59,8 +59,8 @@ func (s *Server) MarshalJSON() ([]byte, error) {
 
 func (s *Server) MarshalJSONTo(enc *jsontext.Encoder) error {
 	var x struct {
-		ServerProps `json:",inline"`
-		Extensions  spec.Extensions `json:",inline"`
+		ServerProps `json:",embed"`
+		Extensions  spec.Extensions `json:",embed"`
 	}
 	x.Extensions = internal.SanitizeExtensions(s.Extensions)
 	x.ServerProps = s.ServerProps
@@ -83,7 +83,7 @@ func (s *Server) UnmarshalJSON(data []byte) error {
 
 func (s *Server) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
 	var x struct {
-		Extensions spec.Extensions `json:",inline"`
+		Extensions spec.Extensions `json:",embed"`
 		ServerProps
 	}
 	if err := jsonv2.UnmarshalDecode(dec, &x); err != nil {
@@ -127,8 +127,8 @@ func (s *ServerVariable) MarshalJSON() ([]byte, error) {
 
 func (s *ServerVariable) MarshalJSONTo(enc *jsontext.Encoder) error {
 	var x struct {
-		ServerVariableProps `json:",inline"`
-		Extensions          spec.Extensions `json:",inline"`
+		ServerVariableProps `json:",embed"`
+		Extensions          spec.Extensions `json:",embed"`
 	}
 	x.Extensions = internal.SanitizeExtensions(s.Extensions)
 	x.ServerVariableProps = s.ServerVariableProps
@@ -150,7 +150,7 @@ func (s *ServerVariable) UnmarshalJSON(data []byte) error {
 
 func (s *ServerVariable) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
 	var x struct {
-		Extensions spec.Extensions `json:",inline"`
+		Extensions spec.Extensions `json:",embed"`
 		ServerVariableProps
 	}
 	if err := jsonv2.UnmarshalDecode(dec, &x); err != nil {

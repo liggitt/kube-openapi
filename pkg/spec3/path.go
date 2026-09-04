@@ -193,7 +193,7 @@ func (p *Path) MarshalJSON() ([]byte, error) {
 func (p *Path) MarshalJSONTo(enc *jsontext.Encoder) error {
 	var x struct {
 		Ref        string          `json:"$ref,omitempty"`
-		Extensions spec.Extensions `json:",inline"`
+		Extensions spec.Extensions `json:",embed"`
 		PathProps
 	}
 	x.Ref = p.Refable.Ref.String()
@@ -220,7 +220,7 @@ func (p *Path) UnmarshalJSON(data []byte) error {
 
 func (p *Path) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
 	var x struct {
-		Extensions spec.Extensions `json:",inline"`
+		Extensions spec.Extensions `json:",embed"`
 		PathProps
 	}
 

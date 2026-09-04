@@ -83,7 +83,7 @@ func (r Responses) MarshalJSON() ([]byte, error) {
 func (r Responses) MarshalJSONTo(enc *jsontext.Encoder) error {
 	type ArbitraryKeys map[string]interface{}
 	var x struct {
-		ArbitraryKeys ArbitraryKeys `json:",inline"`
+		ArbitraryKeys ArbitraryKeys `json:",embed"`
 		Default       *Response     `json:"default,omitempty"`
 	}
 	x.ArbitraryKeys = make(map[string]any, len(r.Extensions)+len(r.StatusCodeResponses))

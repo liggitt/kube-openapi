@@ -53,8 +53,8 @@ func (m *MediaType) MarshalJSON() ([]byte, error) {
 
 func (e *MediaType) MarshalJSONTo(enc *jsontext.Encoder) error {
 	var x struct {
-		MediaTypeProps mediaTypePropsOmitZero `json:",inline"`
-		Extensions     spec.Extensions        `json:",inline"`
+		MediaTypeProps mediaTypePropsOmitZero `json:",embed"`
+		Extensions     spec.Extensions        `json:",embed"`
 	}
 	x.Extensions = internal.SanitizeExtensions(e.Extensions)
 	x.MediaTypeProps = mediaTypePropsOmitZero(e.MediaTypeProps)
@@ -76,7 +76,7 @@ func (m *MediaType) UnmarshalJSON(data []byte) error {
 
 func (m *MediaType) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
 	var x struct {
-		Extensions spec.Extensions `json:",inline"`
+		Extensions spec.Extensions `json:",embed"`
 		MediaTypeProps
 	}
 	if err := jsonv2.UnmarshalDecode(dec, &x); err != nil {

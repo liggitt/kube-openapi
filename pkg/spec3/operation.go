@@ -53,8 +53,8 @@ func (o *Operation) MarshalJSON() ([]byte, error) {
 
 func (o *Operation) MarshalJSONTo(enc *jsontext.Encoder) error {
 	var x struct {
-		Extensions     spec.Extensions        `json:",inline"`
-		OperationProps operationPropsOmitZero `json:",inline"`
+		Extensions     spec.Extensions        `json:",embed"`
+		OperationProps operationPropsOmitZero `json:",embed"`
 	}
 	x.Extensions = internal.SanitizeExtensions(o.Extensions)
 	x.OperationProps = operationPropsOmitZero(o.OperationProps)
@@ -74,7 +74,7 @@ func (o *Operation) UnmarshalJSON(data []byte) error {
 
 func (o *Operation) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
 	var x struct {
-		Extensions spec.Extensions `json:",inline"`
+		Extensions spec.Extensions `json:",embed"`
 		OperationProps
 	}
 	if err := jsonv2.UnmarshalDecode(dec, &x); err != nil {

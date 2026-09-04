@@ -57,8 +57,8 @@ func (s *SecurityScheme) MarshalJSON() ([]byte, error) {
 func (s *SecurityScheme) MarshalJSONTo(enc *jsontext.Encoder) error {
 	var x struct {
 		Ref                 string `json:"$ref,omitempty"`
-		SecuritySchemeProps `json:",inline"`
-		Extensions          spec.Extensions `json:",inline"`
+		SecuritySchemeProps `json:",embed"`
+		Extensions          spec.Extensions `json:",embed"`
 	}
 	x.Ref = s.Refable.Ref.String()
 	x.Extensions = internal.SanitizeExtensions(s.Extensions)

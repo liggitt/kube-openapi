@@ -187,7 +187,7 @@ func (i Info) MarshalJSON() ([]byte, error) {
 
 func (i Info) MarshalJSONTo(enc *jsontext.Encoder) error {
 	var x struct {
-		Extensions Extensions `json:",inline"`
+		Extensions Extensions `json:",embed"`
 		InfoProps
 	}
 	x.Extensions = i.Extensions
@@ -209,7 +209,7 @@ func (i *Info) UnmarshalJSON(data []byte) error {
 
 func (i *Info) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
 	var x struct {
-		Extensions Extensions `json:",inline"`
+		Extensions Extensions `json:",embed"`
 		InfoProps
 	}
 	if err := jsonv2.UnmarshalDecode(dec, &x); err != nil {
